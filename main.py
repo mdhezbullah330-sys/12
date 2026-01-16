@@ -8,7 +8,7 @@ from flask import Flask
 from threading import Thread
 
 # --- CONFIGURATION ---
-TOKEN = 'MTQ2MTU2MTMyMTU5MzExNDcwNg.Gh3ZYR.RS7-36nGkUELIran0yvScD21fJ0x5KntLwtxwo'
+TOKEN = 'MTQ2MTU2MTMyMTU5MzExNDcwNg.GaFAEV.iRDUQ0vjntMbXbzuau-stzdnCo_OUNFiLEGFIo'
 WEBHOOK_URL = 'https://discord.com/api/webhooks/1461571981211074736/HfJEgfjBMZGIuvdb-buBECGQ92hRnwNCKpRegrMHoYYKNNdg5XFAczz8wfdxTHLqxqVp'
 
 intents = discord.Intents.default()
@@ -215,4 +215,5 @@ async def leave(ctx):
 
 if __name__ == '__main__':
     keep_alive()
+
     bot.run(TOKEN)
