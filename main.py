@@ -8,22 +8,23 @@ from flask import Flask
 from threading import Thread
 
 # --- CONFIGURATION ---
-TOKEN = 'MTQ2MTU2MTMyMTU5MzExNDcwNg.GaFAEV.iRDUQ0vjntMbXbzuau-stzdnCo_OUNFiLEGFIo'
+# টোকেনটি হাইড করা হয়েছে (Render Environment এ DISCORD_TOKEN নাম দিয়ে টোকেনটি বসাবেন)
+TOKEN = os.environ.get('DISCORD_TOKEN')
+# ওয়েব হুক ইউআরএলটি আপনার অনুরোধ অনুযায়ী সরাসরি রাখা হলো
 WEBHOOK_URL = 'https://discord.com/api/webhooks/1461571981211074736/HfJEgfjBMZGIuvdb-buBECGQ92hRnwNCKpRegrMHoYYKNNdg5XFAczz8wfdxTHLqxqVp'
 
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='m!', intents=intents)
 
-# Music Options - YouTube Sign-in সমস্যা এড়াতে উন্নত সেটিংস
+# Music Options - উন্নত ইউটিউব সাপোর্ট এবং রি-কানেক্ট সেটিংস
 YDL_OPTIONS = {
     'format': 'bestaudio/best',
     'noplaylist': 'True',
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    'source_address': '0.0.0.0',
-    'extract_flat': False,
+    'source_address': '0.0.0.0'
 }
 FFMPEG_OPTIONS = {
     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
@@ -36,7 +37,7 @@ queue = []
 app = Flask('')
 @app.route('/')
 def home():
-    return "<h1>BENJA MUSIC IS ONLINE!</h1><p>The bot is running successfully.</p>"
+    return "<h1>BENJA MUSIC IS ONLINE!</h1>"
 
 def run():
     app.run(host='0.0.0.0', port=8080)
@@ -63,7 +64,7 @@ def send_logs(action, title, url):
 @bot.event
 async def on_ready():
     print(f'>>> {bot.user.name} IS NOW ONLINE <<<')
-    # বটের স্ট্যাটাসে "Listening to m!play" যোগ করা হয়েছে
+    # বটের স্ট্যাটাসে গান শোনার টেক্সট যোগ করা হয়েছে
     await bot.change_presence(
         activity=discord.Activity(type=discord.ActivityType.listening, name="m!play")
     )
@@ -78,10 +79,10 @@ async def join(ctx):
             return await ctx.voice_client.move_to(channel)
         await channel.connect()
         embed = discord.Embed(
-            description=f"🎧 Successfully connected to **{channel}**! ✨", 
+            description=f"🎧 Joined **{channel}** successfully! ✨", 
             color=0x3498db
         )
-        embed.set_footer(text="DEVELOPED BY TALHA | PREMIUM EXPERIENCE")
+        embed.set_footer(text="DEVELOPED BY TALHA")
         await ctx.send(embed=embed)
         return True
     else:
@@ -96,7 +97,7 @@ async def join(ctx):
 
 @bot.command()
 async def play(ctx, *, search):
-    # ইউজার VC-তে আছে কি না চেক (একবার মেসেজ দেখানোর জন্য লজিক আপডেট)
+    # ইউজার VC-তে আছে কি না চেক (একবার ওয়ার্নিং দেওয়ার জন্য)
     if not ctx.author.voice:
         embed = discord.Embed(
             title="Access Denied!",
@@ -136,7 +137,7 @@ async def play(ctx, *, search):
                 )
                 if thumbnail:
                     embed.set_thumbnail(url=thumbnail)
-                embed.set_footer(text="DEVELOPED BY TALHA | PREMIUM MUSIC")
+                embed.set_footer(text="DEVELOPED BY TALHA | PREMIUM EXPERIENCE")
                 await ctx.send(embed=embed)
                 send_logs("PLAYING", title, web_url)
         except Exception as e:
@@ -215,5 +216,4 @@ async def leave(ctx):
 
 if __name__ == '__main__':
     keep_alive()
-
     bot.run(TOKEN)
